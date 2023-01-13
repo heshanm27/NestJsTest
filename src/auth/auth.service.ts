@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -15,6 +19,18 @@ export class AuthService {
       return values;
     }
 
-    throw new UnauthorizedException();
+    throw new UnauthorizedException('Invalid credentials');
+  }
+
+  //create new user
+  async createUser(username: string, pass: string): Promise<any> {
+    //find user
+    const user = await this.userService.findOne(username);
+
+    if (user) {
+      throw new BadRequestException('User already exists');
+    }
+
+    return await this.userService.createUser(username, pass);
   }
 }

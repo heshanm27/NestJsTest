@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
+import { BadRequestException } from '@nestjs/common/exceptions/bad-request.exception';
 
 @Controller('user')
 export class UserController {
@@ -15,6 +16,12 @@ export class UserController {
   // Get user by username
   @Get(':username')
   async findOne(@Param() params) {
-    return await this.userService.findOne(params.username);
+    const user = await this.userService.findOne(params.username);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return user;
   }
 }

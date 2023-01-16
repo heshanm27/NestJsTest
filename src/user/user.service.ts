@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 export type User = {
-  userId: number;
-  username: string;
+  id: number;
+  email: string;
   password: string;
   role: string;
 };
@@ -11,43 +11,40 @@ export type User = {
 export class UserService {
   private readonly users: User[] = [
     {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
+      id: 1,
+      email: 'john@gmail.com',
+      password: 'test',
       role: 'admin',
     },
     {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-      role: 'user',
-    },
-    {
-      userId: 3,
-      username: 'test',
+      id: 2,
+      email: 'maria@gmail.com',
       password: 'test',
       role: 'user',
     },
     {
-      userId: 4,
-      username: 'test2',
-      password: 'test2',
+      id: 3,
+      email: 'test',
+      password: 'test@gmail.com',
       role: 'user',
     },
   ];
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+  findOneById(id: number): User  {
+    return this.users.find((user) => user.id === id);
   }
 
+  findOneByEmail(email: string): User  {
+    return this.users.find((user) => user.email === email);
+  }
   findAll(): User[] {
     return this.users;
   }
 
-  createUser(username: string, password: string): User {
+  createUser(email: string, password: string): User {
     const user: User = {
-      userId: this.users.length + 1,
-      username,
+      id: this.users.length + 1,
+      email,
       password,
       role: 'user',
     };
@@ -56,4 +53,6 @@ export class UserService {
 
     return user;
   }
+
+
 }

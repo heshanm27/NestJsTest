@@ -14,9 +14,9 @@ export class UserController {
   }
 
   // Get user by username
-  @Get(':username')
+  @Get(':id')
   async findOne(@Param() params) {
-    const user = await this.userService.findOne(params.username);
+    const user = await this.userService.findOneById(params.id);
 
     if (!user) {
       throw new BadRequestException('User not found');

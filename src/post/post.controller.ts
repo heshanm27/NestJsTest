@@ -6,13 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  SetMetadata,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { PostDoc } from './post.service';
 import { Role, Roles } from 'src/role/role.decorator';
 import { RolesGuard } from 'src/role/role.guard';
 import { UseGuards } from '@nestjs/common/decorators';
+import { PostDto } from './dto/post.dto';
 
 @Controller('post')
 export class PostController {
@@ -21,7 +20,7 @@ export class PostController {
   @Post()
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
-  create(@Body() createPostDto: PostDoc) {
+  create(@Body() createPostDto: PostDto) {
     return this.postService.create(createPostDto);
   }
 
@@ -38,7 +37,7 @@ export class PostController {
   @Patch(':id')
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
-  update(@Param('id') id: string, @Body() updatePostDto: PostDoc) {
+  update(@Param('id') id: string, @Body() updatePostDto: PostDto) {
     return this.postService.update(+id, updatePostDto);
   }
 

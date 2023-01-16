@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PostDto } from './dto/post.dto';
 
 export type PostDoc = {
   id: number;
@@ -36,8 +37,14 @@ export class PostService {
     },
   ];
 
-  create(createPostDto: PostDoc) {
-    return this.posts.push(createPostDto);
+  create(createPostDto: PostDto) {
+    const newPost = {
+      id: this.posts.length + 1,
+      title: createPostDto.title,
+      content: createPostDto.content,
+      authorId: createPostDto.authorId,
+    };
+    return this.posts.push(newPost);
   }
 
   findAll() {
@@ -48,10 +55,19 @@ export class PostService {
     return this.posts.find((post) => post.id === id);
   }
 
-  update(id: number, updatePostDto: PostDoc) {
-    const withoutPost: number = this.posts.findIndex((post) => post.id === id);
-    this.posts.splice(withoutPost, 1);
-    return this.posts.push(updatePostDto);
+  update(id: number, updatePostDto: PostDto) {
+
+    //find and remove the post from array
+    const postIndex: number = this.posts.findIndex((post) => post.id === id);
+    this.posts.splice(postIndex, 1);
+
+    const updatePost = {
+      id: id,
+      title: updatePostDto.title,
+      content: updatePostDto.content,
+      authorId: updatePostDto.authorId,
+    };
+    return this.posts.push(updatePost);
   }
 
   remove(id: number) {

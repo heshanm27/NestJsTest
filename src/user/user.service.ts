@@ -13,7 +13,7 @@ export class UserService {
     {
       id: 1,
       email: 'john@gmail.com',
-      password: 'test',
+      password: '123456',
       role: 'admin',
     },
     {

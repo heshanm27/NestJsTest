@@ -8,7 +8,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly authService:AuthService ){
-        super()
+        super({ usernameField: 'email' })
     }
 
     validate (email:string, password:string):User{

@@ -57,7 +57,6 @@ export class PostService {
   }
 
   update(id: number, updatePostDto: PostDto) {
-
     //find and remove the post from array
     const postIndex: number = this.posts.findIndex((post) => post.id === id);
     this.posts.splice(postIndex, 1);

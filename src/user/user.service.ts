@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-export type User = {
-  id: number;
-  email: string;
-  password: string;
-  role: string;
-};
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
@@ -14,7 +8,7 @@ export class UserService {
       id: 1,
       email: 'john@gmail.com',
       password: '123456',
-      role: 'admin',
+      role: 'reader',
     },
     {
       id: 2,
@@ -30,11 +24,11 @@ export class UserService {
     },
   ];
 
-  findOneById(id: number): User  {
+  findOneById(id: number): User {
     return this.users.find((user) => user.id === id);
   }
 
-  findOneByEmail(email: string): User  {
+  findOneByEmail(email: string): User {
     return this.users.find((user) => user.email === email);
   }
   findAll(): User[] {
@@ -53,6 +47,4 @@ export class UserService {
 
     return user;
   }
-
-
 }

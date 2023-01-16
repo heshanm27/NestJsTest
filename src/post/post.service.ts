@@ -5,6 +5,7 @@ export type PostDoc = {
   id: number;
   title: string;
   content: string;
+  category?: string[];
   authorId: number;
 };
 

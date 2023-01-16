@@ -1,4 +1,4 @@
-import {  IsNotEmpty,IsString,IsNumber,IsArray} from "class-validator";
+import {  IsNotEmpty,IsString,IsNumber,IsArray, IsOptional} from "class-validator";
 
 
 export class PostDto{
@@ -16,6 +16,7 @@ export class PostDto{
 
     @IsNotEmpty()
     @IsArray()
+    @IsOptional()
     category?: string[];
 
     @IsNotEmpty()

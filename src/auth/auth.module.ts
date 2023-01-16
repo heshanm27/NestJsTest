@@ -10,12 +10,12 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 @Global()
 @Module({
-  providers: [AuthService,JwtStrategy,LocalStrategy],
-  controllers: [AuthController],
   imports: [UserModule,PassportModule.register({defaultStrategy: 'jwt'}),JwtModule.register({
     secret: 'secretKey',
     signOptions: { expiresIn: '3600s' },
   })],
+  providers: [AuthService,JwtStrategy,LocalStrategy],
+  controllers: [AuthController],
 
 })
 export class AuthModule {}

@@ -15,11 +15,6 @@ export class AuthController {
     return this.authService.login(req.user as User);
   }
 
-  @Post('test')
-  test(){
-    console.log('test')
-    return 'test'
-  }
   @Post('/signup')
   async signUp(@Body() body:AuthDto) {
     return await this.authService.signUp(body.email, body.password);

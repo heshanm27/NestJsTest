@@ -34,20 +34,6 @@ export class AuthService {
   }
 
 
-  verifyToken(token: string):User {
-    const decoded = this.jwtService.verify(token,{
-      secret: 'secretKey'
-    });
-
-    const user = this.userService.findOneByEmail(decoded.email);
-
-    if(!user){
-      throw new BadRequestException('User not found');
-    }
-    return user;
-  }
-
-
   //create new user
   async signUp(email: string, pass: string): Promise<any> {
     //find user

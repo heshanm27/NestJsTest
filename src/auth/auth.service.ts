@@ -7,8 +7,8 @@ import { User, UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
-  // constructor(private readonly userService: UserService,private readonly jwtService:JwtService) {}
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,private readonly jwtService:JwtService) {}
+
 
   //check recieved username and password match
    validateUser(email: string, pass: string): User |null {
@@ -23,29 +23,29 @@ export class AuthService {
   }
 
 
-  // login(user: User) {
-  //   const payload ={
-  //       email: user.email,
-  //   }
+  login(user: User) {
+    const payload ={
+        email: user.email,
+    }
 
-  //   return {
-  //       access_token: this.jwtService.sign(payload)
-  //   }
-  // }
+    return {
+        access_token: this.jwtService.sign(payload)
+    }
+  }
 
 
-  // verifyToken(token: string):User {
-  //   const decoded = this.jwtService.verify(token,{
-  //     secret: 'secretKey'
-  //   });
+  verifyToken(token: string):User {
+    const decoded = this.jwtService.verify(token,{
+      secret: 'secretKey'
+    });
 
-  //   const user = this.userService.findOneByEmail(decoded.email);
+    const user = this.userService.findOneByEmail(decoded.email);
 
-  //   if(!user){
-  //     throw new BadRequestException('User not found');
-  //   }
-  //   return user;
-  // }
+    if(!user){
+      throw new BadRequestException('User not found');
+    }
+    return user;
+  }
 
 
   //create new user

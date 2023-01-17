@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 
 export class PostDto {
+  static readonly collectionName = 'PostDto';
   @IsNotEmpty()
   @IsString()
   title: string;

@@ -5,6 +5,7 @@ import {
   CaslAbilityFactory,
 } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { User } from 'src/user/entity/user.entity';
+import { subject } from '@casl/ability';
 
 export type PostDoc = {
   id: number;
@@ -68,9 +69,11 @@ export class PostService {
     const postIndex: number = this.posts.findIndex((post) => post.id === id);
     this.posts.splice(postIndex, 0);
     console.log(this.posts[postIndex]);
+    console.log('updatePostDto', updatePostDto);
     const ability = this.caslAblity.defineAbility(user);
-    const isAllowed = ability.can(Actions.Update, this.posts[postIndex]);
+    const isAllowed = ability.can(Actions.Update, user);
     console.log(isAllowed);
+
     if (!isAllowed) {
       throw new UnauthorizedException('not enough permissions');
     }
@@ -80,6 +83,8 @@ export class PostService {
       content: updatePostDto.content,
       authorId: updatePostDto.authorId,
     };
+
+    console.log('updatePost', updatePost);
     return this.posts.push(updatePost);
   }
 

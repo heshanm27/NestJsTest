@@ -1,50 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entity/user.entity';
+import { InjectRepository } from '@nestjs/typeorm/dist/common';
+import { Repository } from 'typeorm/repository/Repository';
+import { BadRequestException } from '@nestjs/common/exceptions';
+import { UserCreateDto } from './dto/usercreate.dto';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      email: 'john@gmail.com',
-      password: '123456',
-      role: 'writer',
-    },
-    {
-      id: 2,
-      email: 'maria@gmail.com',
-      password: 'test',
-      role: 'user',
-    },
-    {
-      id: 3,
-      email: 'test',
-      password: 'test@gmail.com',
-      role: 'user',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  findOneById(id: number): User {
-    return this.users.find((user) => user.id === id);
+  async findOneById(id: string): Promise<User> {
+    return await this.usersRepository.findOneBy({
+      id,
+    });
   }
 
-  findOneByEmail(email: string): User {
-    return this.users.find((user) => user.email === email);
-  }
-  findAll(): User[] {
-    return this.users;
-  }
-
-  createUser(email: string, password: string): User {
-    const user: User = {
-      id: this.users.length + 1,
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.usersRepository.findOneBy({
       email,
-      password,
-      role: 'user',
-    };
+    });
+  }
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
+  }
 
-    this.users.push(user);
+  async createUser(userDetails: UserCreateDto): Promise<User> {
+    const user = await this.usersRepository.create({
+      ...userDetails,
+    });
+    const savedUser = await this.usersRepository.save(user);
+    return savedUser;
+  }
 
-    return user;
+  async updateUser(id: string, userDetails: UserCreateDto): Promise<string> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const updatedUser = await this.usersRepository.update(id, {
+      ...userDetails,
+    });
+
+    return 'updatedUser';
+  }
+
+  async deleteUser(id: string): Promise<String> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return 'User deleted   ';
   }
 }

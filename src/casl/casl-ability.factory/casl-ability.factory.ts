@@ -30,19 +30,20 @@ export class CaslAbilityFactory {
       MongoAbility<[Actions, Subjects]>
     >(createMongoAbility);
 
+    console.log('userid', user.id);
+    console.log('userrole', user.role);
     switch (user.role) {
       case Role.Admin:
         can(Actions.Manage, 'all');
         break;
       case Role.Writer:
         can(Actions.Create, 'all');
-        can(Actions.Update, PostDto, { authorId: user.id });
-        can(Actions.Delete, PostDto, { authorId: user.id });
+        // can(Actions.Update, User, { id: 1 });
+        can(Actions.Delete, PostDto, { authorId: 1 });
         can(Actions.Read, PostDto);
         break;
       case Role.Editor:
-        can(Actions.Manage, 'all');
-        cannot(Actions.Delete, PostDto);
+        can(Actions.Manage, PostDto);
         break;
       default:
         can(Actions.Read, 'all');

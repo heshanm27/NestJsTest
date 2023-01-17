@@ -32,6 +32,7 @@ export class CaslAbilityFactory {
 
     console.log('userid', user.id);
     console.log('userrole', user.role);
+
     switch (user.role) {
       case Role.Admin:
         can(Actions.Manage, 'all');

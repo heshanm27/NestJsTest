@@ -55,10 +55,14 @@ export class PostController {
   }
 
   @Patch(':id')
-  @Roles(Role.Writer, Role.Admin, Role.Editor)
+  // @Roles(Role.Writer, Role.Admin, Role.Editor)
   @UseGuards(jwtAuthGuard, RolesGuard)
-  update(@Param('id') id: string, @Body() updatePostDto: PostDto) {
-    return this.postService.update(+id, updatePostDto);
+  update(
+    @Param('id') id: string,
+    @Body() updatePostDto: PostDto,
+    @Req() req: Request,
+  ) {
+    return this.postService.update(+id, updatePostDto, req.user as User);
   }
 
   @Delete(':id')

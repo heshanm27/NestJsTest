@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PostDto } from './dto/post.dto';
+import {
+  Actions,
+  CaslAbilityFactory,
+} from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { User } from 'src/user/entity/user.entity';
 
 export type PostDoc = {
   id: number;
@@ -11,6 +16,8 @@ export type PostDoc = {
 
 @Injectable()
 export class PostService {
+  constructor(private readonly caslAblity: CaslAbilityFactory) {}
+
   private posts: PostDoc[] = [
     {
       id: 1,
@@ -56,11 +63,17 @@ export class PostService {
     return this.posts.find((post) => post.id === id);
   }
 
-  update(id: number, updatePostDto: PostDto) {
+  update(id: number, updatePostDto: PostDto, user: User) {
     //find and remove the post from array
     const postIndex: number = this.posts.findIndex((post) => post.id === id);
-    this.posts.splice(postIndex, 1);
-
+    this.posts.splice(postIndex, 0);
+    console.log(this.posts[postIndex]);
+    const ability = this.caslAblity.defineAbility(user);
+    const isAllowed = ability.can(Actions.Update, this.posts[postIndex]);
+    console.log(isAllowed);
+    if (!isAllowed) {
+      throw new UnauthorizedException('not enough permissions');
+    }
     const updatePost = {
       id: id,
       title: updatePostDto.title,

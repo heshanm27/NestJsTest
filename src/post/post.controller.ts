@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PostService } from './post.service';
-import { PostDto } from './dto/post.dto';
+import { PostCreateDto } from './dto/postCreate.dto';
 import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Role } from 'src/auth/authorization/role.enum';
 import { Roles } from 'src/auth/authorization/roles.decorator';
@@ -22,6 +22,7 @@ import {
   CaslAbilityFactory,
 } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { User } from 'src/user/entity/user.entity';
+import { PostUpdateDto } from './dto/postUpdate.dto';
 
 @Controller('post')
 export class PostController {
@@ -31,44 +32,40 @@ export class PostController {
   ) {}
 
   @Get()
-  @Roles(Role.Writer, Role.Admin, Role.Editor)
-  @UseGuards(jwtAuthGuard, RolesGuard)
-  findAll() {
-    return this.postService.findAll();
+  async findAll() {
+    return await this.postService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.postService.findOne(id);
   }
 
   @Post()
-  // @Roles(Role.Writer, Role.Admin, Role.Editor)
+  @Roles(Role.Writer, Role.Admin, Role.Editor)
   @UseGuards(jwtAuthGuard, RolesGuard)
-  create(@Req() req: Request, @Body() createPostDto: PostDto) {
+  async create(@Req() req: Request, @Body() createPostDto: PostCreateDto) {
     const ability = this.caslAblity.defineAbility(req.user as User);
     const isAllowed = ability.can(Actions.Create, req.user as User);
     if (!isAllowed) {
       throw new UnauthorizedException('not enough permissions');
     }
-    return this.postService.create(createPostDto);
+    return await this.postService.create(createPostDto, req.user as User);
   }
 
   @Patch(':id')
-  // @Roles(Role.Writer, Role.Admin, Role.Editor)
+  @Roles(Role.Writer, Role.Admin, Role.Editor)
   @UseGuards(jwtAuthGuard, RolesGuard)
-  update(
-    @Param('id') id: string,
-    @Body() updatePostDto: PostDto,
-    @Req() req: Request,
-  ) {
-    return this.postService.update(+id, updatePostDto, req.user as User);
+  async update(@Param('id') id: string, @Body() updatePostDto: PostUpdateDto) {
+    return await this.postService.update(id, {
+      ...updatePostDto,
+    });
   }
 
   @Delete(':id')
   @Roles(Role.Writer, Role.Admin, Role.Editor)
   @UseGuards(jwtAuthGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.postService.delete(id);
   }
 }

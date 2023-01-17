@@ -5,7 +5,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 export class Post {
   static readonly collectionName = 'Post';
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   title: string;
@@ -13,8 +13,8 @@ export class Post {
   @Column()
   content: string;
 
-  @Column({ type: 'simple-array', default: '[]' })
-  category: string[];
+  @Column()
+  category: string;
 
   @ManyToOne(() => User, (user) => user.id)
   authorId: string;

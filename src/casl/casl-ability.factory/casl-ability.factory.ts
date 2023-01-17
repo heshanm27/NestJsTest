@@ -8,8 +8,8 @@ import {
 
 import { User } from 'src/user/entity/user.entity';
 import { Injectable } from '@nestjs/common';
-import { PostDto } from 'src/post/dto/post.dto';
 import { Role } from 'src/auth/authorization/role.enum';
+import { Post } from 'src/post/entity/post.entity';
 
 export enum Actions {
   Manage = 'manage',
@@ -19,7 +19,7 @@ export enum Actions {
   Delete = 'delete',
 }
 
-type Subjects = InferSubjects<typeof PostDto | typeof User> | 'all';
+type Subjects = InferSubjects<typeof Post | typeof User> | 'all';
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;
 
@@ -39,11 +39,11 @@ export class CaslAbilityFactory {
       case Role.Writer:
         can(Actions.Create, 'all');
         // can(Actions.Update, User, { id: 1 });
-        can(Actions.Delete, PostDto, { authorId: 1 });
-        can(Actions.Read, PostDto);
+        can(Actions.Delete, Post, { authorId: user.id });
+        can(Actions.Read, Post);
         break;
       case Role.Editor:
-        can(Actions.Manage, PostDto);
+        can(Actions.Manage, Post);
         break;
       default:
         can(Actions.Read, 'all');

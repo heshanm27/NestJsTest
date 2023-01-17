@@ -37,22 +37,27 @@ export class UserService {
 
   async updateUser(id: string, userDetails: UserCreateDto): Promise<string> {
     const user = await this.usersRepository.findOneBy({ id });
+
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    const updatedUser = await this.usersRepository.update(id, {
-      ...userDetails,
-    });
 
-    return 'updatedUser';
+    await this.usersRepository.update(id, userDetails);
+
+    return 'user updated';
   }
 
-  async deleteUser(id: string): Promise<String> {
-    const user = await this.usersRepository.findOneBy({ id });
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
+  async deleteUser(id: string): Promise<string> {
+    try {
+      const user = await this.usersRepository.findOneBy({ id });
 
-    return 'User deleted   ';
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      await this.usersRepository.delete(id);
+      return 'User deleted';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

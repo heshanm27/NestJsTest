@@ -1,95 +1,59 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PostDto } from './dto/post.dto';
 import {
   Actions,
   CaslAbilityFactory,
 } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { User } from 'src/user/entity/user.entity';
 import { subject } from '@casl/ability';
-
-export type PostDoc = {
-  id: number;
-  title: string;
-  content: string;
-  category?: string[];
-  authorId: number;
-};
-
+import { Post } from './entity/post.entity';
+import { InjectRepository } from '@nestjs/typeorm/dist/common';
+import { Repository } from 'typeorm/repository/Repository';
+import { PostCreateDto } from './dto/postCreate.dto';
+import { PostUpdateDto } from './dto/postUpdate.dto';
 @Injectable()
 export class PostService {
-  constructor(private readonly caslAblity: CaslAbilityFactory) {}
+  constructor(
+    private readonly caslAblity: CaslAbilityFactory,
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
+  ) {}
 
-  private posts: PostDoc[] = [
-    {
-      id: 1,
-      title: 'Post 1',
-      content: 'Content 1',
-      authorId: 1,
-    },
-    {
-      id: 2,
-      title: 'Post 2',
-      content: 'Content 2',
-      authorId: 2,
-    },
-    {
-      id: 3,
-      title: 'Post 3',
-      content: 'Content 3',
-      authorId: 3,
-    },
-    {
-      id: 4,
-      title: 'Post 4',
-      content: 'Content 4',
-      authorId: 4,
-    },
-  ];
-
-  create(createPostDto: PostDto) {
-    const newPost = {
-      id: this.posts.length + 1,
-      title: createPostDto.title,
-      content: createPostDto.content,
-      authorId: createPostDto.authorId,
-    };
-    return this.posts.push(newPost);
+  async create(createPostDto: PostCreateDto, user: User): Promise<Post> {
+    try {
+      const newPost = this.postRepository.create({
+        ...createPostDto,
+        authorId: user.id,
+      });
+      return await this.postRepository.save(newPost);
+    } catch (err) {}
   }
 
-  findAll() {
-    return this.posts;
+  async findAll(): Promise<Post[]> {
+    return await this.postRepository.find();
   }
 
-  findOne(id: number) {
-    return this.posts.find((post) => post.id === id);
+  async findOne(id: string): Promise<Post> {
+    return await this.postRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePostDto: PostDto, user: User) {
+  async update(id: string, updatePostDto: PostUpdateDto): Promise<string> {
     //find and remove the post from array
-    const postIndex: number = this.posts.findIndex((post) => post.id === id);
-    this.posts.splice(postIndex, 0);
-    console.log(this.posts[postIndex]);
-    console.log('updatePostDto', updatePostDto);
-    const ability = this.caslAblity.defineAbility(user);
-    const isAllowed = ability.can(Actions.Update, user);
-    console.log(isAllowed);
+    const post = await this.postRepository.findOneBy({ id });
 
-    if (!isAllowed) {
-      throw new UnauthorizedException('not enough permissions');
+    if (!post) {
+      throw new UnauthorizedException('Post not found');
     }
-    const updatePost = {
-      id: id,
-      title: updatePostDto.title,
-      content: updatePostDto.content,
-      authorId: updatePostDto.authorId,
-    };
 
-    console.log('updatePost', updatePost);
-    return this.posts.push(updatePost);
+    await this.postRepository.update(id, updatePostDto);
+    return 'Post updated';
   }
 
-  remove(id: number) {
-    const withoutPost: number = this.posts.findIndex((post) => post.id === id);
-    return this.posts.splice(withoutPost, 1);
+  async delete(id: string) {
+    const post = await this.postRepository.findOneBy({ id });
+    if (!post) {
+      throw new UnauthorizedException('Post not found');
+    }
+    await this.postRepository.delete(id);
+    return 'Post deleted';
   }
 }

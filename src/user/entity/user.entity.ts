@@ -1,3 +1,4 @@
+import { Role } from 'src/auth/authorization/role.enum';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
@@ -17,6 +18,6 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ default: 'reader' })
+  @Column({ default: Role.Reader })
   role: string;
 }

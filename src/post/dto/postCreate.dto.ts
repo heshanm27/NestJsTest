@@ -6,8 +6,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-export class PostDto {
-  static readonly collectionName = 'PostDto';
+export class PostCreateDto {
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -17,11 +16,6 @@ export class PostDto {
   content: string;
 
   @IsNotEmpty()
-  @IsArray()
   @IsOptional()
-  category?: string[];
-
-  @IsNotEmpty()
-  @IsNumber()
-  authorId: number;
+  category?: string;
 }

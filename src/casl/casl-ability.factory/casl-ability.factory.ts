@@ -38,7 +38,7 @@ export class CaslAbilityFactory {
         break;
       case Role.Writer:
         can(Actions.Create, 'all');
-        // can(Actions.Update, User, { id: 1 });
+        can(Actions.Update, Post, { authorId: user.id });
         can(Actions.Delete, Post, { authorId: user.id });
         can(Actions.Read, Post);
         break;

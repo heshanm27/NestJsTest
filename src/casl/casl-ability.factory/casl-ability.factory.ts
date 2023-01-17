@@ -50,8 +50,8 @@ export class CaslAbilityFactory {
     }
 
     return build({
-      detectSubjectType: (item) =>
-        item.constructor as ExtractSubjectType<Subjects>,
+      // @ts-ignore
+      detectSubjecType: (type) => type!.constructor as any,
     });
   }
 }

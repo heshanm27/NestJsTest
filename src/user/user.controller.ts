@@ -5,7 +5,6 @@ import { Post } from 'src/post/entity/post.entity';
 
 @Controller('user')
 export class UserController {
-  // Inject User Service class
   constructor(private readonly userService: UserService) {}
 
   @Get()

@@ -1,10 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import {
   Actions,
   CaslAbilityFactory,
 } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { User } from 'src/user/entity/user.entity';
-import { subject } from '@casl/ability';
+import { subject, defineAbility, ForbiddenError } from '@casl/ability';
 import { Post } from './entity/post.entity';
 import { InjectRepository } from '@nestjs/typeorm/dist/common';
 import { Repository } from 'typeorm/repository/Repository';
@@ -36,19 +40,33 @@ export class PostService {
     return await this.postRepository.findOneBy({ id });
   }
 
-  async update(id: string, updatePostDto: PostUpdateDto): Promise<string> {
-    //find and remove the post from array
-    const post = await this.postRepository.findOneBy({ id });
+  async update(
+    id: string,
+    updatePostDto: PostUpdateDto,
+    user: User,
+  ): Promise<string> {
+    try {
+      const post = await this.postRepository.findOneBy({ id });
 
-    if (!post) {
-      throw new UnauthorizedException('Post not found');
+      if (!post) {
+        throw new UnauthorizedException('Post not found');
+      }
+
+      const ability = this.caslAblity.defineAbility(user);
+
+      ForbiddenError.from(ability).throwUnlessCan(Actions.Update, post);
+
+      await this.postRepository.update(id, updatePostDto);
+
+      return 'Post updated';
+    } catch (error) {
+      if (error instanceof ForbiddenError) {
+        throw new ForbiddenException('Not authorized to update post');
+      }
     }
-
-    await this.postRepository.update(id, updatePostDto);
-    return 'Post updated';
   }
 
-  async delete(id: string) {
+  async delete(id: string, user: User) {
     const post = await this.postRepository.findOneBy({ id });
     if (!post) {
       throw new UnauthorizedException('Post not found');

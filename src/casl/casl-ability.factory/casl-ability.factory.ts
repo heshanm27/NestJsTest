@@ -33,7 +33,7 @@ export class CaslPermission {
         can(Actions.Manage, 'all');
         break;
       case Role.Writer:
-        can(Actions.Create, 'all');
+        can(Actions.Create, Post);
         can(Actions.Update, Post, {
           authorId: user.id,
         });
@@ -41,12 +41,18 @@ export class CaslPermission {
           authorId: user.id,
         });
         can(Actions.Read, Post);
+        can(Actions.Update, User, { id: user.id });
         break;
       case Role.Editor:
         can(Actions.Manage, Post);
+        can(Actions.Update, User, { id: user.id });
+        break;
+      case Role.Reader:
+        can(Actions.Read, Post);
+        can(Actions.Update, User, { id: user.id });
         break;
       default:
-        can(Actions.Read, 'all');
+        break;
     }
 
     return build({

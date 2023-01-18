@@ -56,7 +56,6 @@ export class PostService {
 
       const ability = this.caslPermission.defineAbility(user);
 
-      console.log(post);
       ForbiddenError.from(ability).throwUnlessCan(Actions.Update, post);
 
       await this.postRepository.update(id, updatePostDto);

@@ -4,6 +4,8 @@ import {
   AbilityBuilder,
   InferSubjects,
   MongoAbility,
+  Ability,
+  AbilityClass,
 } from '@casl/ability';
 
 import { User } from 'src/user/entity/user.entity';
@@ -19,19 +21,16 @@ export enum Actions {
   Delete = 'delete',
 }
 
-type Subjects = InferSubjects<typeof Post | typeof User> | 'all';
+type Subjects = typeof Post | typeof User | Post | User | 'all';
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;
 
 @Injectable()
-export class CaslAbilityFactory {
+export class CaslPermission {
   defineAbility(user: User) {
     const { can, cannot, build } = new AbilityBuilder<
       MongoAbility<[Actions, Subjects]>
     >(createMongoAbility);
-
-    console.log('userid', user.id);
-    console.log('userrole', user.role);
 
     switch (user.role) {
       case Role.Admin:
@@ -39,8 +38,10 @@ export class CaslAbilityFactory {
         break;
       case Role.Writer:
         can(Actions.Create, 'all');
-        can(Actions.Update, Post, { authorId: user.id });
-        can(Actions.Delete, Post, { authorId: user.id });
+        can(Actions.Update, Post);
+        can(Actions.Delete, Post, {
+          authorId: 'f0509fdc-e6e9-4c51-8d0e-b5334f68b17c',
+        });
         can(Actions.Read, Post);
         break;
       case Role.Editor:
@@ -51,8 +52,7 @@ export class CaslAbilityFactory {
     }
 
     return build({
-      // @ts-ignore
-      detectSubjecType: (type) => type!.constructor as any,
+      detectSubjectType: (type) => type.constructor as any,
     });
   }
 }

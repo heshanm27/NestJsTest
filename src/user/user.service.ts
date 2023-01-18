@@ -35,7 +35,7 @@ export class UserService {
     return savedUser;
   }
 
-  async updateUser(id: string, userDetails: UserCreateDto): Promise<string> {
+  async updateUser(id: string, userDetails: UserCreateDto): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
@@ -44,10 +44,12 @@ export class UserService {
 
     await this.usersRepository.update(id, userDetails);
 
-    return 'user updated';
+    const updatedUser = await this.usersRepository.findOneBy({ id });
+
+    return updatedUser;
   }
 
-  async deleteUser(id: string): Promise<string> {
+  async deleteUser(id: string): Promise<User> {
     try {
       const user = await this.usersRepository.findOneBy({ id });
 
@@ -55,7 +57,7 @@ export class UserService {
         throw new BadRequestException('User not found');
       }
       await this.usersRepository.delete(id);
-      return 'User deleted';
+      return user;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

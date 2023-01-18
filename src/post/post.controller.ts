@@ -41,8 +41,8 @@ export class PostController {
   }
 
   @Patch(':id')
-  @Roles(Role.Writer, Role.Admin, Role.Editor, Role.Reader)
-  @UseGuards(jwtAuthGuard, RolesGuard)
+  // @Roles(Role.Writer, Role.Admin, Role.Editor, Role.Reader)
+  @UseGuards(jwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updatePostDto: PostUpdateDto,

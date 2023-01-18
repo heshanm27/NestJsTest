@@ -3,10 +3,7 @@ import {
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
-import {
-  Actions,
-  CaslAbilityFactory,
-} from 'src/casl/casl-ability.factory/casl-ability.factory';
+
 import { User } from 'src/user/entity/user.entity';
 import { subject, defineAbility, ForbiddenError } from '@casl/ability';
 import { Post } from './entity/post.entity';
@@ -14,10 +11,14 @@ import { InjectRepository } from '@nestjs/typeorm/dist/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { PostCreateDto } from './dto/postCreate.dto';
 import { PostUpdateDto } from './dto/postUpdate.dto';
+import {
+  Actions,
+  CaslPermission,
+} from 'src/casl/casl-ability.factory/casl-ability.factory';
 @Injectable()
 export class PostService {
   constructor(
-    private readonly caslAblity: CaslAbilityFactory,
+    private readonly caslPermission: CaslPermission,
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
   ) {}
@@ -44,34 +45,39 @@ export class PostService {
     id: string,
     updatePostDto: PostUpdateDto,
     user: User,
-  ): Promise<string> {
+  ): Promise<Post> {
     try {
       const post = await this.postRepository.findOneBy({ id });
 
       if (!post) {
+        console.log('post not found');
         throw new UnauthorizedException('Post not found');
       }
 
-      const ability = this.caslAblity.defineAbility(user);
+      const ability = this.caslPermission.defineAbility(user);
 
       ForbiddenError.from(ability).throwUnlessCan(Actions.Update, post);
 
       await this.postRepository.update(id, updatePostDto);
 
-      return 'Post updated';
+      const updatedPost = await this.postRepository.findOneBy({ id });
+
+      return updatedPost;
     } catch (error) {
       if (error instanceof ForbiddenError) {
-        throw new ForbiddenException('Not authorized to update post');
+        throw new ForbiddenException(error.message);
       }
+
+      throw error;
     }
   }
 
-  async delete(id: string, user: User) {
+  async delete(id: string, user: User): Promise<Post> {
     const post = await this.postRepository.findOneBy({ id });
     if (!post) {
       throw new UnauthorizedException('Post not found');
     }
     await this.postRepository.delete(id);
-    return 'Post deleted';
+    return post;
   }
 }

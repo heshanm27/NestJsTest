@@ -2,6 +2,7 @@ import {
   createMongoAbility,
   AbilityBuilder,
   MongoAbility,
+  InferSubjects,
 } from '@casl/ability';
 
 import { User } from 'src/user/entity/user.entity';
@@ -17,7 +18,7 @@ export enum Actions {
   Delete = 'delete',
 }
 
-type Subjects = typeof Post | typeof User | Post | User | 'all';
+type Subjects = InferSubjects<typeof Post | typeof User> | 'all';
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;
 

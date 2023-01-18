@@ -56,6 +56,7 @@ export class PostService {
 
       const ability = this.caslPermission.defineAbility(user);
 
+      console.log(post);
       ForbiddenError.from(ability).throwUnlessCan(Actions.Update, post);
 
       await this.postRepository.update(id, updatePostDto);
@@ -65,7 +66,7 @@ export class PostService {
       return updatedPost;
     } catch (error) {
       if (error instanceof ForbiddenError) {
-        throw new ForbiddenException(error.message);
+        throw new ForbiddenException('You are not allowed to do this');
       }
 
       throw error;

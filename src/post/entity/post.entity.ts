@@ -16,6 +16,7 @@ export class Post {
   @Column()
   category: string;
 
+  @Column()
   @ManyToOne(() => User, (user) => user.id)
   authorId: string;
 }

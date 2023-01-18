@@ -1,11 +1,7 @@
 import {
   createMongoAbility,
-  ExtractSubjectType,
   AbilityBuilder,
-  InferSubjects,
   MongoAbility,
-  Ability,
-  AbilityClass,
 } from '@casl/ability';
 
 import { User } from 'src/user/entity/user.entity';
@@ -28,7 +24,7 @@ export type AppAbility = MongoAbility<[Actions, Subjects]>;
 @Injectable()
 export class CaslPermission {
   defineAbility(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<
+    const { can, build } = new AbilityBuilder<
       MongoAbility<[Actions, Subjects]>
     >(createMongoAbility);
 
@@ -38,9 +34,11 @@ export class CaslPermission {
         break;
       case Role.Writer:
         can(Actions.Create, 'all');
-        can(Actions.Update, Post);
+        can(Actions.Update, Post, {
+          authorId: user.id,
+        });
         can(Actions.Delete, Post, {
-          authorId: 'f0509fdc-e6e9-4c51-8d0e-b5334f68b17c',
+          authorId: user.id,
         });
         can(Actions.Read, Post);
         break;

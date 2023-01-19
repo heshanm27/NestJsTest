@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 
-import { User } from 'src/user/entity/user.entity';
+import { User } from '../user/entity/user.entity';
 import { ForbiddenError } from '@casl/ability';
 import { Post } from './entity/post.entity';
 import { InjectRepository } from '@nestjs/typeorm/dist/common';
@@ -15,7 +15,7 @@ import { PostUpdateDto } from './dto/postUpdate.dto';
 import {
   Actions,
   CaslPermission,
-} from 'src/casl/casl-ability.factory/casl-ability.factory';
+} from '../casl/casl-ability.factory/casl-ability.factory';
 @Injectable()
 
 //Inject CaslPermission Class to use it in the service

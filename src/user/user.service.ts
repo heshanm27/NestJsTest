@@ -38,12 +38,19 @@ export class UserService {
   }
 
   async createUser(userDetails: UserCreateDto): Promise<User> {
-    const user = await this.usersRepository.create({
-      ...userDetails,
-    });
-    const savedUser = await this.usersRepository.save(user);
-    console.log(savedUser);
-    return savedUser;
+    try {
+      const user = await this.usersRepository.create({
+        ...userDetails,
+      });
+      const savedUser = await this.usersRepository.save(user);
+      console.log(savedUser);
+      return savedUser;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new BadRequestException('User already exists with this email');
+      }
+      throw error;
+    }
   }
 
   async updateUser(id: string, userDetails: UserCreateDto): Promise<User> {

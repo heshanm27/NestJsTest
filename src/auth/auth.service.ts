@@ -35,11 +35,6 @@ export class AuthService {
 
   // create new user
   async signUp(userInfo: UserCreateDto): Promise<any> {
-    try {
-      console.log('called signup');
-      return await this.userService.createUser(userInfo);
-    } catch (error) {
-      throw new BadRequestException('User already exists  with this email ');
-    }
+    return await this.userService.createUser(userInfo);
   }
 }

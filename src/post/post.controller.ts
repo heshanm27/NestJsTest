@@ -13,11 +13,11 @@ import {
 import { Request } from 'express';
 import { PostService } from './post.service';
 import { PostCreateDto } from './dto/postCreate.dto';
-import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Role } from 'src/auth/authorization/role.enum';
-import { Roles } from 'src/auth/authorization/roles.decorator';
-import { RolesGuard } from 'src/auth/authorization/role.guard';
-import { User } from 'src/user/entity/user.entity';
+import { jwtAuthGuard } from '../auth/guards/jwt.guard';
+import { Role } from '../auth/authorization/role.enum';
+import { Roles } from '../auth/authorization/roles.decorator';
+import { RolesGuard } from '../auth/authorization/role.guard';
+import { User } from '../user/entity/user.entity';
 import { PostUpdateDto } from './dto/postUpdate.dto';
 
 @Controller('post')

@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { Role } from 'src/auth/authorization/role.enum';
 import { Post } from 'src/post/entity/post.entity';
 
+//Define the actions
 export enum Actions {
   Manage = 'manage',
   Create = 'create',
@@ -18,6 +19,7 @@ export enum Actions {
   Delete = 'delete',
 }
 
+//Define the subjects
 type Subjects = InferSubjects<typeof Post | typeof User> | 'all';
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;
@@ -29,6 +31,7 @@ export class CaslPermission {
       MongoAbility<[Actions, Subjects]>
     >(createMongoAbility);
 
+    //Define the permissions for each role
     switch (user.role) {
       case Role.Admin:
         can(Actions.Manage, 'all');
@@ -43,14 +46,17 @@ export class CaslPermission {
         });
         can(Actions.Read, Post);
         can(Actions.Update, User, { id: user.id });
+        can(Actions.Delete, User, { id: user.id });
         break;
       case Role.Editor:
         can(Actions.Manage, Post);
         can(Actions.Update, User, { id: user.id });
+        can(Actions.Delete, User, { id: user.id });
         break;
       case Role.Reader:
         can(Actions.Read, Post);
         can(Actions.Update, User, { id: user.id });
+        can(Actions.Delete, User, { id: user.id });
         break;
       default:
         break;

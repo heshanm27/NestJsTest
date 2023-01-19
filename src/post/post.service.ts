@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 
 import { User } from 'src/user/entity/user.entity';
@@ -16,6 +17,9 @@ import {
   CaslPermission,
 } from 'src/casl/casl-ability.factory/casl-ability.factory';
 @Injectable()
+
+//Inject CaslPermission Class to use it in the service
+//Inject postRepository to use database operations(TypeOrm)
 export class PostService {
   constructor(
     private readonly caslPermission: CaslPermission,
@@ -23,6 +27,7 @@ export class PostService {
     private postRepository: Repository<Post>,
   ) {}
 
+  //Create a new post
   async create(createPostDto: PostCreateDto, user: User): Promise<Post> {
     try {
       const newPost = this.postRepository.create({
@@ -30,7 +35,9 @@ export class PostService {
         authorId: user.id,
       });
       return await this.postRepository.save(newPost);
-    } catch (err) {}
+    } catch (err) {
+      throw err;
+    }
   }
 
   async findAll(): Promise<Post[]> {
@@ -50,18 +57,17 @@ export class PostService {
       const post = await this.postRepository.findOneBy({ id });
 
       if (!post) {
-        console.log('post not found');
         throw new UnauthorizedException('Post not found');
       }
 
+      //Check if the user is allowed to update the post
       const ability = this.caslPermission.defineAbility(user);
-
       ForbiddenError.from(ability).throwUnlessCan(Actions.Update, post);
 
+      //Update the post
       await this.postRepository.update(id, updatePostDto);
-
+      //Return the updated post
       const updatedPost = await this.postRepository.findOneBy({ id });
-
       return updatedPost;
     } catch (error) {
       if (error instanceof ForbiddenError) {
@@ -72,10 +78,18 @@ export class PostService {
     }
   }
 
+  //Delete a post
   async delete(id: string, user: User): Promise<Post> {
+    //check if the user exists
     const post = await this.postRepository.findOneBy({ id });
+
+    //Check if the user is allowed to update the post
+    const ability = this.caslPermission.defineAbility(user);
+    ForbiddenError.from(ability).throwUnlessCan(Actions.Delete, post);
+
+    //user not found throw an error
     if (!post) {
-      throw new UnauthorizedException('Post not found');
+      throw new BadRequestException('Post not found');
     }
     await this.postRepository.delete(id);
     return post;

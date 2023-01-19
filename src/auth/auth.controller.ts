@@ -6,6 +6,7 @@ import { User } from 'src/user/entity/user.entity';
 import { UserCreateDto } from 'src/user/dto/usercreate.dto';
 @Controller('auth')
 export class AuthController {
+  //Inject the AuthService
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)

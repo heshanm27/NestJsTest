@@ -1,4 +1,4 @@
-import { Role } from 'src/auth/authorization/role.enum';
+import { Role } from '../../auth/authorization/role.enum';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')

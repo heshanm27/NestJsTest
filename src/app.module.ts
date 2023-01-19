@@ -5,6 +5,7 @@ import { PostModule } from './post/post.module';
 import { CaslModule } from './casl/casl.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,5 +27,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
     }),
   ],
+  providers: [JwtService],
 })
 export class AppModule {}

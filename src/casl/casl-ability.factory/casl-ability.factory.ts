@@ -5,10 +5,10 @@ import {
   InferSubjects,
 } from '@casl/ability';
 
-import { User } from 'src/user/entity/user.entity';
+import { User } from '../../user/entity/user.entity';
 import { Injectable } from '@nestjs/common';
-import { Role } from 'src/auth/authorization/role.enum';
-import { Post } from 'src/post/entity/post.entity';
+import { Role } from '../../auth/authorization/role.enum';
+import { Post } from '../../post/entity/post.entity';
 
 //Define the actions
 export enum Actions {

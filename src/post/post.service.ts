@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { User } from 'src/user/entity/user.entity';
-import { subject, defineAbility, ForbiddenError } from '@casl/ability';
+import { ForbiddenError } from '@casl/ability';
 import { Post } from './entity/post.entity';
 import { InjectRepository } from '@nestjs/typeorm/dist/common';
 import { Repository } from 'typeorm/repository/Repository';

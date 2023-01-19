@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PostService } from './post.service';
@@ -30,7 +31,13 @@ export class PostController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.postService.findOne(id);
+    const post = await this.postService.findOne(id);
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
+    return post;
   }
 
   @Post()

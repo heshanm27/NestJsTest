@@ -2,8 +2,8 @@ import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local.guard';
 import { Request } from 'express';
-import { User } from 'src/user/entity/user.entity';
-import { UserCreateDto } from 'src/user/dto/usercreate.dto';
+import { User } from '../user/entity/user.entity';
+import { UserCreateDto } from '../user/dto/usercreate.dto';
 @Controller('auth')
 export class AuthController {
   //Inject the AuthService
@@ -17,6 +17,7 @@ export class AuthController {
 
   @Post('/signup')
   async signUp(@Body() body: UserCreateDto) {
+    console.log('signup');
     return await this.authService.signUp(body);
   }
 }

@@ -10,7 +10,7 @@ import { UserCreateDto } from './dto/usercreate.dto';
 import {
   Actions,
   CaslPermission,
-} from 'src/casl/casl-ability.factory/casl-ability.factory';
+} from '../casl/casl-ability.factory/casl-ability.factory';
 import { ForbiddenError } from '@casl/ability';
 
 @Injectable()
@@ -32,6 +32,7 @@ export class UserService {
       email,
     });
   }
+
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find();
   }
@@ -41,6 +42,7 @@ export class UserService {
       ...userDetails,
     });
     const savedUser = await this.usersRepository.save(user);
+    console.log(savedUser);
     return savedUser;
   }
 

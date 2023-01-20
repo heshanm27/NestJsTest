@@ -8,11 +8,15 @@ import { Post } from '../src/post/entity/post.entity';
 import { User } from '../src/user/entity/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PostCreateDto } from 'src/post/dto/postCreate.dto';
+import { UserUpdateDto } from 'src/user/dto/userUpdate.dto';
+import { PostUpdateDto } from 'src/post/dto/postUpdate.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let BASE_URL: string = 'http://localhost:8000';
   let token = '';
+  let tempUser: User;
+  let tempPost: Post;
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -27,8 +31,8 @@ describe('AppController (e2e)', () => {
   afterAll(async () => {
     const postRepo = app.get<Repository<Post>>(getRepositoryToken(Post));
     const userRep = app.get<Repository<User>>(getRepositoryToken(User));
+    await postRepo.delete({});
     await userRep.delete({});
-    // await postRepo.delete({});
     await app.close();
     console.log('App closed');
   });
@@ -106,7 +110,7 @@ describe('AppController (e2e)', () => {
           email: '',
           password: '123456',
         };
-        const reponse = await await request(BASE_URL)
+        const reponse = await request(BASE_URL)
           .post('/auth/login')
           .send(userDto);
 
@@ -121,7 +125,7 @@ describe('AppController (e2e)', () => {
           email: 'test@gmail.com',
           password: '1234562',
         };
-        const reponse = await await request(BASE_URL)
+        const reponse = await request(BASE_URL)
           .post('/auth/login')
           .send(userDto);
         console.log(reponse.body);
@@ -135,9 +139,10 @@ describe('AppController (e2e)', () => {
           email: 'test@gmail.com',
           password: '1234567',
         };
-        const reponse = await await request(BASE_URL)
+        const reponse = await request(BASE_URL)
           .post('/auth/login')
           .send(userDto);
+
         token = reponse.body.access_token;
         console.log(reponse.body);
         expect(reponse.statusCode).toBe(201);
@@ -153,10 +158,7 @@ describe('AppController (e2e)', () => {
       it('should return users array with details', async () => {
         const reponse = await request(BASE_URL).get('/user');
 
-        // console.log(reponse.body);
-
-        // token = reponse.body.access_token;
-        console.log(reponse.body);
+        tempUser = reponse.body[0];
         expect(reponse.statusCode).toBe(200);
         expect(reponse.body).toEqual(
           expect.arrayContaining([
@@ -170,44 +172,163 @@ describe('AppController (e2e)', () => {
             }),
           ]),
         );
-        // expect(reponse.body).toMatchObject({
-        //   access_token: expect.any(String),
-        // });
       });
     });
 
-    describe('get user by id', () => {});
+    describe('get user by id', () => {
+      it('should return user with details', async () => {
+        const reponse = await request(BASE_URL).get(`/user/${tempUser.id}`);
+        expect(reponse.statusCode).toBe(200);
+        expect(reponse.body).toMatchObject({
+          id: expect.any(String),
+          email: expect.any(String),
+          password: expect.any(String),
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+          role: expect.any(String),
+        });
+      });
+    });
 
-    describe('update user', () => {});
-
-    describe('delete user', () => {});
+    describe('update user', () => {
+      it('should update user', async () => {
+        const userDto: UserUpdateDto = {
+          ...tempUser,
+          firstName: 'test',
+          lastName: 'test',
+          role: 'admin',
+        };
+        const reponse = await request(BASE_URL)
+          .patch(`/user/${tempUser.id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(userDto);
+        console.log('update', reponse.body);
+        expect(reponse.statusCode).toBe(200);
+        expect(reponse.body).toMatchObject({
+          id: expect.any(String),
+          email: expect.any(String),
+          password: expect.any(String),
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+          role: expect.any(String),
+        });
+      });
+    });
   });
 
   describe('Post', () => {
     describe('create', () => {
-      // it('should create a post ', async () => {
-      //   const postDto: PostCreateDto = {
-      //     content: 'test',
-      //     title: 'test title',
-      //     category: 'test category',
-      //   };
-      //   const reponse = await await request(BASE_URL)
-      //     .post('/post')
-      //     .set('Authorization', `Bearer ${token}`)
-      //     .send(postDto);
-      //   console.log(reponse.body);
-      //   expect(reponse.statusCode).toBe(201);
-      //   // expect(reponse.body).toHaveProperty('message');
-      //   // expect(reponse.body.message).toContain('Unauthorized');
-      // });
+      it('should create a post ', async () => {
+        const postDto: PostCreateDto = {
+          content: 'test',
+          title: 'test title',
+          category: 'test category',
+        };
+        const reponse = await request(BASE_URL)
+          .post('/post')
+          .set('Authorization', `Bearer ${token}`)
+          .send(postDto);
+        console.log(reponse.body);
+        expect(reponse.statusCode).toBe(201);
+        // expect(reponse.body).toHaveProperty('message');
+        // expect(reponse.body.message).toContain('Unauthorized');
+      });
     });
 
-    describe('get all', () => {});
+    describe('get all', () => {
+      it('should return posts array with details', async () => {
+        const reponse = await request(BASE_URL).get('/post');
 
-    describe('get by id', () => {});
+        tempPost = reponse.body[0];
+        expect(reponse.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(String),
+              title: expect.any(String),
+              content: expect.any(String),
+              category: expect.any(String),
+              authorId: expect.any(String),
+            }),
+          ]),
+        );
+      });
+    });
 
-    describe('update', () => {});
+    describe('get by id', () => {
+      it('should return post with details', async () => {
+        const reponse = await request(BASE_URL).get(`/post/${tempPost.id}`);
+        console.log(tempPost.id);
+        console.log(reponse.body);
+        expect(reponse.statusCode).toBe(200);
+        expect(reponse.body).toMatchObject({
+          id: expect.any(String),
+          title: expect.any(String),
+          content: expect.any(String),
+          category: expect.any(String),
+          authorId: expect.any(String),
+        });
+      });
+    });
 
-    describe('delete', () => {});
+    describe('update post', () => {
+      it('should update post', async () => {
+        const postDto: PostUpdateDto = {
+          title: 'test post Updated title',
+          content: 'test post Updated content',
+          category: 'test post Updated category',
+        };
+        const reponse = await request(BASE_URL)
+          .patch(`/post/${tempPost.id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(postDto);
+
+        console.log('update', reponse.body);
+        expect(reponse.statusCode).toBe(200);
+        expect(reponse.body).toMatchObject({
+          id: expect.any(String),
+          title: expect.any(String),
+          content: expect.any(String),
+          category: expect.any(String),
+          authorId: expect.any(String),
+        });
+      });
+    });
+
+    describe('delete post', () => {
+      it('should delete post', async () => {
+        const reponse = await request(BASE_URL)
+          .delete(`/post/${tempPost.id}`)
+          .set('Authorization', `Bearer ${token}`);
+
+        console.log('delete', reponse.body);
+        expect(reponse.statusCode).toBe(200);
+        expect(reponse.body).toMatchObject({
+          id: expect.any(String),
+          title: expect.any(String),
+          content: expect.any(String),
+          category: expect.any(String),
+          authorId: expect.any(String),
+        });
+      });
+    });
+  });
+
+  describe('delete user', () => {
+    it('should delete user', async () => {
+      const reponse = await request(BASE_URL)
+        .delete(`/user/${tempUser.id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      console.log('delete', reponse.body);
+      expect(reponse.statusCode).toBe(200);
+      expect(reponse.body).toMatchObject({
+        id: expect.any(String),
+        email: expect.any(String),
+        password: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        role: expect.any(String),
+      });
+    });
   });
 });

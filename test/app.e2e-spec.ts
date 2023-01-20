@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
@@ -228,10 +228,7 @@ describe('AppController (e2e)', () => {
           .post('/post')
           .set('Authorization', `Bearer ${token}`)
           .send(postDto);
-        console.log(reponse.body);
         expect(reponse.statusCode).toBe(201);
-        // expect(reponse.body).toHaveProperty('message');
-        // expect(reponse.body.message).toContain('Unauthorized');
       });
     });
 

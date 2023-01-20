@@ -56,9 +56,9 @@ export class PostService {
     try {
       const post = await this.postRepository.findOneBy({ id });
 
-      if (!post) {
-        throw new UnauthorizedException('Post not found');
-      }
+      // if (!post) {
+      //   throw new UnauthorizedException('Post not found');
+      // }
 
       //Check if the user is allowed to update the post
       const ability = this.caslPermission.defineAbility(user);

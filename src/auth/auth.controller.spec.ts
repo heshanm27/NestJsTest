@@ -9,6 +9,7 @@ import * as httpMocks from 'node-mocks-http';
 describe('Auth Controller', () => {
   let controller: AuthController;
   const mockRequest = httpMocks.createRequest();
+
   mockRequest.user = {
     id: 'Id1',
     email: 'test@gmail.com',
@@ -17,8 +18,9 @@ describe('Auth Controller', () => {
     lastName: 'testlastname',
     role: 'reader',
   };
+
   const mockAuthService = {
-    login: jest.fn((user: User) => {
+    login: jest.fn((req: Request) => {
       return Promise.resolve({ access_token: 'test' });
     }),
     signUp: jest.fn((user: UserCreateDto) =>
@@ -48,5 +50,20 @@ describe('Auth Controller', () => {
 
   it('should return access_token', async () => {
     const result = await controller.login(mockRequest);
+    console.log(result);
+    expect(result).toEqual({ access_token: 'test' });
+  });
+  it('should return user', async () => {
+    const user: UserCreateDto = {
+      email: 'email@gmail.com',
+      password: '123456',
+    };
+    const result = await controller.signUp(user);
+    expect(mockAuthService.signUp).toBeCalledWith(user);
+    expect(result).toEqual({
+      id: 1,
+      email: 'test@gmail.com',
+      password: 'test',
+    });
   });
 });

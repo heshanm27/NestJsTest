@@ -76,7 +76,6 @@ describe('Auth Controller', () => {
       email: '',
       password: '',
     };
-
     const result = await service.signUp(mockUserDto);
     expect(mockUsersService.createUser).toHaveBeenCalled();
     expect(result).toEqual(mockUser);

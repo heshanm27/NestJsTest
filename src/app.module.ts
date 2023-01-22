@@ -6,6 +6,7 @@ import { CaslModule } from './casl/casl.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { dataSourceOptions } from '../db/data-source';
 
 @Module({
   imports: [
@@ -17,13 +18,8 @@ import { JwtService } from '@nestjs/jwt';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      synchronize: true,
+      ...dataSourceOptions,
+      dropSchema: Boolean(process.env.TYPEORM_DROP_SCHEMA),
       autoLoadEntities: true,
     }),
   ],

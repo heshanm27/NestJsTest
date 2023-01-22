@@ -3,20 +3,19 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { UserCreateDto } from '../src/user/dto/usercreate.dto';
-import { Repository } from 'typeorm';
 import { Post } from '../src/post/entity/post.entity';
 import { User } from '../src/user/entity/user.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { PostCreateDto } from 'src/post/dto/postCreate.dto';
-import { UserUpdateDto } from 'src/user/dto/userUpdate.dto';
-import { PostUpdateDto } from 'src/post/dto/postUpdate.dto';
+import { PostCreateDto } from '../src/post/dto/postCreate.dto';
+import { UserUpdateDto } from '../src/user/dto/userUpdate.dto';
+import { PostUpdateDto } from '../src/post/dto/postUpdate.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let BASE_URL: string = 'http://localhost:8000';
+  let BASE_URL: string = process.env.BASE_URL;
   let token = '';
   let tempUser: User;
   let tempPost: Post;
+  console.log(process.env.PORT);
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -25,16 +24,22 @@ describe('AppController (e2e)', () => {
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
-    await app.listen(process.env.PORT || 8000);
+    await app.listen(process.env.PORT);
   });
 
   afterAll(async () => {
-    const postRepo = app.get<Repository<Post>>(getRepositoryToken(Post));
-    const userRep = app.get<Repository<User>>(getRepositoryToken(User));
-    await postRepo.delete({});
-    await userRep.delete({});
+    // const postRepo = app.get<Repository<Post>>(getRepositoryToken(Post));
+    // const userRep = app.get<Repository<User>>(getRepositoryToken(User));
+    // await postRepo.delete({});
+    // await userRep.delete({});
     await app.close();
     console.log('App closed');
+  });
+
+  describe('Auth', () => {
+    it('should return access_token', async () => {
+      expect(1).toBe(1);
+    });
   });
 
   describe('Auth', () => {

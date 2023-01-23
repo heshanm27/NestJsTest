@@ -19,6 +19,7 @@ describe('Auth Controller', () => {
     role: 'reader',
     firstName: '',
     lastName: '',
+    isVerified: true,
   };
 
   let mockPost: Post = {
@@ -97,25 +98,26 @@ describe('Auth Controller', () => {
     expect(posts).toEqual(mockPost);
   });
 
-  //   it('should update a post', async () => {
-  //     const mokePost: Post = {
-  //       title: 'test',
-  //       content: 'test',
-  //       authorId: 'Id1',
-  //       category: 'test',
-  //       id: 'Id1',
-  //     };
+  // it('should update a post', async () => {
+  //   const mokePost: Post = {
+  //     title: 'test',
+  //     content: 'test',
+  //     authorId: 'Id1',
+  //     category: 'test',
+  //     id: 'Id1',
+  //   };
 
-  //     const posts = await service.update(
-  //       '2d4c2457-2fcf-4104-ae0f-0bdb03122c8f',
-  //       mokePost,
-  //       mockUser,
-  //     );
-  //     console.log('post', posts);
-  //     expect(mockPostRepostory.update).toBeCalledWith('Id1', mokePost);
-  //     expect(mockCaslPermission.defineAbility).toBeCalledWith(mockUser);
-  //     // expect(posts).toEqual(mokePost);
-  //   });
+  //   const posts = await service.update(
+  //     '2d4c2457-2fcf-4104-ae0f-0bdb03122c8f',
+  //     mokePost,
+  //     mockUser,
+  //   );
+  //   console.log('post', posts);
+  //   expect(mockPostRepostory.update).toBeCalledWith('Id1', mokePost);
+  //   expect(mockCaslPermission.defineAbility).toBeCalledWith(mockUser);
+  //   expect(mockCaslPermission.throwUnlessCan).toBeCalled();
+  //   // expect(posts).toEqual(mokePost);
+  // });
 
   //   it('should delete a post', async () => {
   //     const posts = await service.delete('Id1', mockUser);

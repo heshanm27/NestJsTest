@@ -48,6 +48,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: '',
           password: '123456',
+          firstName: '',
+          lastName: '',
         };
         const reponse = await await request(BASE_URL)
           .post('/auth/signup')
@@ -62,6 +64,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: 'test@gmail.com',
           password: '',
+          firstName: '',
+          lastName: '',
         };
         const reponse = await await request(BASE_URL)
           .post('/auth/signup')
@@ -76,6 +80,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: 'test@gmail.com',
           password: '1234567',
+          firstName: 'test',
+          lastName: 'test',
         };
         const reponse = await await request(BASE_URL)
           .post('/auth/signup')
@@ -95,6 +101,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: 'test@gmail.com',
           password: '1234567',
+          firstName: 'test',
+          lastName: 'test',
         };
         const reponse = await await request(BASE_URL)
           .post('/auth/signup')
@@ -114,6 +122,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: '',
           password: '123456',
+          firstName: '',
+          lastName: '  ',
         };
         const reponse = await request(BASE_URL)
           .post('/auth/login')
@@ -129,6 +139,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: 'test@gmail.com',
           password: '1234562',
+          firstName: '',
+          lastName: '',
         };
         const reponse = await request(BASE_URL)
           .post('/auth/login')
@@ -143,6 +155,8 @@ describe('AppController (e2e)', () => {
         const userDto: UserCreateDto = {
           email: 'test@gmail.com',
           password: '1234567',
+          firstName: 'test',
+          lastName: 'test',
         };
         const reponse = await request(BASE_URL)
           .post('/auth/login')

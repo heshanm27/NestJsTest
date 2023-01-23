@@ -57,6 +57,8 @@ describe('Auth Controller', () => {
     const user: UserCreateDto = {
       email: 'email@gmail.com',
       password: '123456',
+      firstName: '',
+      lastName: '',
     };
     const result = await controller.signUp(user);
     expect(mockAuthService.signUp).toBeCalledWith(user);

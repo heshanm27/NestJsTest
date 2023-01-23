@@ -16,13 +16,13 @@ export class UserCreateDto {
   @MinLength(6)
   password: string;
 
-  // // @IsOptional()
-  // // @IsString()
-  // // firstName: string;
+  @IsOptional()
+  @IsString()
+  firstName: string;
 
-  // // @IsOptional()
-  // // @IsString()
-  // // lastName: string;
+  @IsOptional()
+  @IsString()
+  lastName: string;
 
   // @IsOptional()
   // @IsString()

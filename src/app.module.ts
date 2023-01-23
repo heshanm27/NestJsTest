@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { dataSourceOptions } from '../db/data-source';
+import { OtpModule } from './util/otp/otp.module';
+import { MailModule } from './util/mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { dataSourceOptions } from '../db/data-source';
       // dropSchema: Boolean(process.env.TYPEORM_DROP_SCHEMA),
       autoLoadEntities: true,
     }),
+    OtpModule,
+    MailModule,
   ],
   providers: [JwtService],
 })

@@ -3,7 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity('posts')
 export class Post {
-  static readonly collectionName = 'Post';
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

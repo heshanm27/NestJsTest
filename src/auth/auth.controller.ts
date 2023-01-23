@@ -13,6 +13,7 @@ import { Request, Response } from 'express';
 import { User } from '../user/entity/user.entity';
 import { UserCreateDto } from '../user/dto/usercreate.dto';
 import { GoogleAuthGuard } from './guards/google.guard';
+
 @Controller('auth')
 export class AuthController {
   //Inject the AuthService
@@ -40,5 +41,22 @@ export class AuthController {
   refresh(@Req() req: Request, @Res() res: Response) {
     const token = this.authService.login(req.user as User);
     res.json(token);
+  }
+
+  @Get('/otp')
+  async getOtp(@Res() res: Response) {
+    // const otp = await this.authService.getOtp();
+    // const otpCode = otp.generate(6, {
+    //   digits: true,
+    //   lowerCaseAlphabets: false,
+    //   upperCaseAlphabets: false,
+    //   specialChars: false,
+    // });
+    // const responseBody = {
+    //   otp: otpCode,
+    //   token: 'token',
+    // };
+
+    res.json({ msg: 'ok' });
   }
 }

@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { User } from 'src/user/entity/user.entity';
 import { UserCreateDto } from 'src/user/dto/usercreate.dto';
 import * as httpMocks from 'node-mocks-http';
+import { OtpService } from 'src/util/otp/otp.service';
 
 describe('Auth Controller', () => {
   let controller: AuthController;
@@ -35,7 +36,7 @@ describe('Auth Controller', () => {
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [AuthService],
+      providers: [AuthService, OtpService],
     })
       .overrideProvider(AuthService)
       .useValue(mockAuthService)

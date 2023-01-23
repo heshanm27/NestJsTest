@@ -43,7 +43,6 @@ export class UserService {
         ...userDetails,
       });
       const savedUser = await this.usersRepository.save(user);
-      console.log(savedUser);
       return savedUser;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {

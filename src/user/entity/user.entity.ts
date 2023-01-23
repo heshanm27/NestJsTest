@@ -18,6 +18,9 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column({ default: false })
+  isVerified: boolean;
+
   @Column({ default: Role.Reader })
   role: string;
 }

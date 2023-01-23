@@ -16,6 +16,7 @@ describe('Auth Controller', () => {
     role: 'reader',
     firstName: '',
     lastName: '',
+    isVerified: true,
   };
 
   let mockUsersService = {

@@ -19,7 +19,7 @@ import { dataSourceOptions } from '../db/data-source';
     }),
     TypeOrmModule.forRoot({
       ...dataSourceOptions,
-      dropSchema: Boolean(process.env.TYPEORM_DROP_SCHEMA),
+      // dropSchema: Boolean(process.env.TYPEORM_DROP_SCHEMA),
       autoLoadEntities: true,
     }),
   ],

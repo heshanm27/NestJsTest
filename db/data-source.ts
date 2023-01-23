@@ -12,15 +12,6 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: true,
 };
 
-console.log(
-  'dataSourceOptions',
-  process.env.DB_HOST,
-  process.env.DB_PORT,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  process.env.DB_NAME,
-  __dirname + '/dist/src/**/*.entity.js',
-);
 const dataSource = new DataSource(dataSourceOptions);
 
 export default dataSource;

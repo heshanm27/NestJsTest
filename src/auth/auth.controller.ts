@@ -5,7 +5,6 @@ import {
   Req,
   UseGuards,
   Get,
-  HttpStatus,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -38,8 +37,8 @@ export class AuthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('/google/redirect')
-  async refresh(@Req() req: Request, @Res() res: Response) {
-    console.log(req.user);
-    return res.status(HttpStatus.OK).json(req.user);
+  refresh(@Req() req: Request, @Res() res: Response) {
+    const token = this.authService.login(req.user as User);
+    res.json(token);
   }
 }

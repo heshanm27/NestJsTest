@@ -9,6 +9,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entity/user.entity';
+import { OtpModule } from 'src/util/otp/otp.module';
 
 @Global()
 @Module({

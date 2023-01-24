@@ -13,11 +13,15 @@ import { Request, Response } from 'express';
 import { User } from '../user/entity/user.entity';
 import { UserCreateDto } from '../user/dto/usercreate.dto';
 import { GoogleAuthGuard } from './guards/google.guard';
+import { OtpService } from '../util/otp/otp.service';
 
 @Controller('auth')
 export class AuthController {
   //Inject the AuthService
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly otpService: OtpService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -45,18 +49,18 @@ export class AuthController {
 
   @Get('/otp')
   async getOtp(@Res() res: Response) {
-    // const otp = await this.authService.getOtp();
-    // const otpCode = otp.generate(6, {
-    //   digits: true,
-    //   lowerCaseAlphabets: false,
-    //   upperCaseAlphabets: false,
-    //   specialChars: false,
-    // });
-    // const responseBody = {
-    //   otp: otpCode,
-    //   token: 'token',
-    // };
+    const otp = await this.otpService.createOtp(
+      '35c1abb7-5074-4f4c-9867-29f15ca5bebf',
+    );
+    res.json({ msg: 'ok', otp });
+  }
 
-    res.json({ msg: 'ok' });
+  @Get('/verify')
+  async verifyOtp(@Res() res: Response) {
+    const otp = await this.otpService.verifyOtp(
+      '35c1abb7-5074-4f4c-9867-29f15ca5bebf',
+    );
+    // console.log(otp);
+    res.json({ msg: 'Otp Verified', otp });
   }
 }
